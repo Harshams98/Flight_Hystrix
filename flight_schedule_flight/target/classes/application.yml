@@ -1,0 +1,10 @@
+server:
+  port: 1004
+
+spring:
+  application:
+    name: Scheduled-Flight-Management
+
+eureka:
+  instance:
+    hostname: localhost

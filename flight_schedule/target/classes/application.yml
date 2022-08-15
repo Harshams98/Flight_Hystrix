@@ -1,0 +1,10 @@
+server:
+  port: 1003
+
+spring:
+  application:
+    name: Schedule-Management
+
+eureka:
+  instance:
+    hostname: localhost
