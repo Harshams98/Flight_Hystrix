@@ -1,0 +1,151 @@
+server:
+  port: 8999
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+      
+
+  instance:
+    hostname: localhost
+
+spring:
+  application:
+    name: Api-Gateway
+  cloud:
+    gateway:
+      routes:
+
+   
+   
+   
+   #Airport microservice
+   
+      - id: Airport-Management
+        uri:
+          lb://Airport-Management
+        predicates:
+        - Path=/api/airport/**
+        filters:
+        - name: CircuitBreaker
+          args:
+            name: Order-service
+            fallbackuri: forward:/airportFallBack
+        
+    #flight microservice
+   
+      - id: Flight-Management
+        uri:
+          lb://Flight-Management
+        predicates:
+        - Path=/api/flight/**   
+        filters:
+        - name: CircuitBreaker
+          args:
+            name: Flight-Management
+            fallbackuri: forward:/flightFallBack   
+        
+  #Schedule microservice
+   
+      - id: Schedule-Management
+        uri:
+          lb://Schedule-Management
+        predicates:
+        - Path=/api/schedule/**
+        filters:
+        - name: CircuitBreaker
+          args:
+            name: Schedule-Management
+            fallbackuri: forward:/scheduleFallBack
+ 
+   #Scheduled-Flight-Management
+   
+      - id: Scheduled-Flight-Management
+        uri:
+          lb://Scheduled-Flight-Management
+        predicates:
+        - Path=/api/scheduledflight/**
+        filters:
+        - name: CircuitBreaker
+          args:
+            name: Scheduled-Flight-Management
+            fallbackuri: forward:/scheduleflightFallBackS
+ 
+ 
+    #Schedule-Management-static
+   
+      - id: schedule-service-static
+        uri:
+          lb://schedule-service-static
+        predicates:
+        - Path=/static/schedule/**
+        filters:
+        - name: CircuitBreaker
+          args:
+            name: Order-service
+            fallbackuri: forward:/orderFallBack
+        
+    #airport-Management-static
+   
+      - id: airport-service-static
+        uri:
+          lb://airport-service-static
+        predicates:
+        - Path=/airport/user/**
+        filters:
+        - name: CircuitBreaker
+          args:
+            name: Order-service
+            fallbackuri: forward:/orderFallBack
+        
+      - id: user-service
+        uri:
+          lb://user-service
+        predicates:
+        - Path=/user/**
+        
+      - id: contact-service
+        uri:
+          lb://contact-service
+        predicates:
+        - Path=/contact/**        
+      
+      - id: order-service
+        uri:
+          lb://order-service
+        predicates:
+        - Path=/order/**      
+        
+      - id: Product-service
+        uri:
+          lb://Product-service
+        predicates:
+        - Path=/product/**        
+        
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream,*
+      base-path: /*
+      
+
+
+    
+hystrix:
+  command:
+    fallbackcmd:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 4000    
+        
+        
+        
+        
+        

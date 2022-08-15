@@ -1,0 +1,10 @@
+server:
+  port: 1001
+
+spring:
+  application:
+    name: Airport-Management
+
+eureka:
+  instance:
+    hostname: localhost
